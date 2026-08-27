@@ -1,0 +1,58 @@
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ==========================
+# Virtual Environment
+# ==========================
+venv/
+.venv/
+
+# ==========================
+# Environment Variables
+# ==========================
+.env
+
+# ==========================
+# Logs
+# ==========================
+logs/
+*.log
+
+# ==========================
+# Generated Data
+# ==========================
+Cleaned_Data/
+Reports/
+
+# Uncomment the next line only if Raw_Data is generated
+# every run and should not be version controlled.
+# Raw_Data/
+
+# ==========================
+# IDE Files
+# ==========================
+.vscode/
+.idea/
+
+# ==========================
+# Operating System Files
+# ==========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================
+# Jupyter
+# ==========================
+.ipynb_checkpoints/
+
+# ==========================
+# Build / Distribution
+# ==========================
+build/
+dist/
+*.egg-info/
