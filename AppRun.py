@@ -25,6 +25,7 @@ from Main.database_loader import load_cleaned_data_to_db
 from Main.order_cleaning import clean_orders
 from Main.product_cleaning import clean_products
 from Main.sales_transaction import create_sales_transaction_df
+from Main.data_profiling import run_data_profile
 
 
 # Ensure logs directory exists
@@ -76,9 +77,15 @@ def main():
     inject_raw_data()
 
     # -------------------------------------------------------------------------
+    # Step 3:Data Profiling
+    # -------------------------------------------------------------------------
+    logger.info("Step 3: Profiling the Data...")
+    run_data_profile()
+
+    # -------------------------------------------------------------------------
     # Step 3: Load Raw CSV Datasets into Memory
     # -------------------------------------------------------------------------
-    logger.info("Step 3: Loading Raw Datasets...")
+    logger.info("Step 4: Loading Raw Datasets...")
     customers_raw = pd.read_csv("Raw_Data/Customers.csv", dtype={"Phone": str})
     products_raw = pd.read_csv("Raw_Data/Products.csv")
     orders_raw = pd.read_csv("Raw_Data/Orders.csv")
@@ -86,31 +93,31 @@ def main():
     # -------------------------------------------------------------------------
     # Step 4: Customer Cleaning Pipeline
     # -------------------------------------------------------------------------
-    logger.info("Step 4: Running Customer Cleaning Pipeline...")
+    logger.info("Step 5: Running Customer Cleaning Pipeline...")
     clean_customers_df, rejected_customers_df = clean_customers(customers_raw)
 
     # -------------------------------------------------------------------------
     # Step 5: Product Cleaning Pipeline
     # -------------------------------------------------------------------------
-    logger.info("Step 5: Running Product Cleaning Pipeline...")
+    logger.info("Step 6: Running Product Cleaning Pipeline...")
     clean_products_df, rejected_products_df = clean_products(products_raw)
 
     # -------------------------------------------------------------------------
     # Step 6: Order Cleaning Pipeline
     # -------------------------------------------------------------------------
-    logger.info("Step 6: Running Order Cleaning Pipeline...")
+    logger.info("Step 7: Running Order Cleaning Pipeline...")
     clean_orders_df, rejected_orders_df = clean_orders(orders_raw)
 
     # -------------------------------------------------------------------------
     # Step 7: Create Sales Transaction Dataset
     # -------------------------------------------------------------------------
-    logger.info("Step 7: Creating Sales Transaction Dataset...")
+    logger.info("Step 8: Creating Sales Transaction Dataset...")
 
     sales_transaction_df = create_sales_transaction_df()
     # -------------------------------------------------------------------------
     # Step 8: Load to Database (Truncate & Insert)
     # -------------------------------------------------------------------------
-    logger.info("Step 8: Loading Cleaned Datasets to Database...")
+    logger.info("Step 9: Loading Cleaned Datasets to Database...")
     load_cleaned_data_to_db(
         customers_df=clean_customers_df,
         products_df=clean_products_df,
@@ -121,13 +128,13 @@ def main():
     # -------------------------------------------------------------------------
     # Step 9: Generate Data Quality Report
     # -------------------------------------------------------------------------
-    logger.info("Step 9: Generating Data Quality Report...")
+    logger.info("Step 10: Generating Data Quality Report...")
     generate_data_quality_report()
 
     # -------------------------------------------------------------------------
     # Step 10: SQL Business Analysis
     # -------------------------------------------------------------------------
-    logger.info("Step 10: Running SQL Business Analysis...")
+    logger.info("Step 11: Running SQL Business Analysis...")
     run_business_analysis()
 
     logger.info("=" * 70)

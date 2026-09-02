@@ -62,7 +62,7 @@ def clean_missing_values(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Order DataFrame.
     """
-    def clean_missing_values(df: pd.DataFrame) -> pd.DataFrame:
+
     logger.info("Checking Missing Values in Order dataset...")
 
     missing_count = df.isna().sum().sum()
@@ -71,41 +71,50 @@ def clean_missing_values(df: pd.DataFrame) -> pd.DataFrame:
     logger.info("Missing Values Checked Successfully.")
 
     return df
+    
 
 
 def clean_duplicate_rows(df: pd.DataFrame) -> pd.DataFrame:
     """
     Removes exact duplicate rows across all columns.
-
-    Args:
-        df (pd.DataFrame): Order DataFrame.
-
-    Returns:
-        pd.DataFrame: Deduplicated DataFrame.
     """
+
     logger.info("Cleaning Duplicate Rows...")
+
     before = len(df)
+
     df = df.drop_duplicates()
+
     after = len(df)
+
     logger.info("Duplicate Rows Removed: %d", before - after)
+
     return df
 
 
 def clean_duplicate_order_ids(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Removes duplicate Order_IDs, keeping the first occurrence.
+    Detects duplicate Order_IDs and flags them for rejection.
 
     Args:
         df (pd.DataFrame): Order DataFrame.
 
     Returns:
-        pd.DataFrame: DataFrame with unique Order_IDs.
+        pd.DataFrame: DataFrame with duplicate Order_IDs flagged.
     """
-    logger.info("Cleaning Duplicate Order IDs...")
-    before = len(df)
-    df = df.drop_duplicates(subset=["Order_ID"], keep="first")
-    after = len(df)
-    logger.info("Duplicate Order_IDs Removed: %d", before - after)
+
+    logger.info("Checking Duplicate Order IDs...")
+
+    df["Duplicate_Order_ID"] = df.duplicated(
+        subset=["Order_ID"],
+        keep="first"
+    )
+
+    logger.info(
+        "Duplicate Order_IDs Found: %d",
+        df["Duplicate_Order_ID"].sum()
+    )
+
     return df
 
 
@@ -264,6 +273,7 @@ def split_clean_and_rejected(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFra
     logger.info("Splitting Cleaned and Rejected Records...")
     df["Reject_Reason"] = pd.Series("", index=df.index, dtype="string")
 
+    df.loc[df["Duplicate_Order_ID"], "Reject_Reason"] += "Duplicate Order_ID, "
     df.loc[df["Customer_ID"].isna(), "Reject_Reason"] += "Invalid Customer_ID, "
     df.loc[df["Product_ID"].isna(), "Reject_Reason"] += "Invalid Product_ID, "
     df.loc[df["Order_Date"].isna(), "Reject_Reason"] += "Invalid Order Date, "
@@ -278,10 +288,17 @@ def split_clean_and_rejected(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFra
     cleaned_df = df[~rejected_condition].copy()
 
     # Remove Reject_Reason from cleaned data
-    cleaned_df = cleaned_df.drop(columns=["Reject_Reason"])
+    cleaned_df = cleaned_df.drop(
+    columns=["Reject_Reason", "Duplicate_Order_ID"]
+    )
+
+    rejected_df = rejected_df.drop(
+        columns=["Duplicate_Order_ID"]
+    )
 
     os.makedirs("Cleaned_Data", exist_ok=True)
     os.makedirs("Rejected_Data", exist_ok=True)
+    cleaned_df["Created_at"] = pd.Timestamp.now()
 
     cleaned_df.to_csv("Cleaned_Data/valid_data/Orders.csv", index=False)
     rejected_df.to_csv("Cleaned_Data/Rejected_Data/Rejected_Orders.csv", index=False)

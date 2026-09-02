@@ -19,7 +19,6 @@ import random
 from faker import Faker
 import pandas as pd
 import logging
-
 log = logging.getLogger(__name__)
 
 def generate_customers(num_customers: int = 20000) -> pd.DataFrame:
@@ -39,23 +38,17 @@ def generate_customers(num_customers: int = 20000) -> pd.DataFrame:
 
     location_data = {
         "Tamil Nadu": [
-            "Chennai", "Coimbatore", "Madurai", "Salem", "Trichy", "Erode", "Tirunelveli"
-        ],
+            "Chennai", "Coimbatore", "Madurai", "Salem", "Trichy", "Erode", "Tirunelveli"],
         "Karnataka": [
-            "Bengaluru", "Mysuru", "Mangaluru", "Hubballi", "Belagavi"
-        ],
+            "Bengaluru", "Mysuru", "Mangaluru", "Hubballi", "Belagavi"],
         "Kerala": [
-            "Kochi", "Thiruvananthapuram", "Kozhikode", "Thrissur"
-        ],
+            "Kochi", "Thiruvananthapuram", "Kozhikode", "Thrissur" ],
         "Maharashtra": [
-            "Mumbai", "Pune", "Nagpur", "Nashik", "Thane"
-        ],
+            "Mumbai", "Pune", "Nagpur", "Nashik", "Thane"],
         "Telangana": [
-            "Hyderabad", "Warangal", "Karimnagar", "Nizamabad"
-        ],
+            "Hyderabad", "Warangal", "Karimnagar", "Nizamabad"],
         "Andhra Pradesh": [
-            "Visakhapatnam", "Vijayawada", "Guntur", "Tirupati"
-        ],
+            "Visakhapatnam", "Vijayawada", "Guntur", "Tirupati"],
         "Delhi": [
             "New Delhi"
         ],
@@ -82,7 +75,7 @@ def generate_customers(num_customers: int = 20000) -> pd.DataFrame:
         ],
     }
 
-    genders = ["Male", "Female"]
+    genders = ["Male", "Female","others"]
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     output_dir = os.path.join(base_dir, "Raw_Data")
     os.makedirs(output_dir, exist_ok=True)

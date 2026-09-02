@@ -73,6 +73,8 @@ def create_sales_transaction_df():
     )
 
     sales["YearMonth"] = sales["Order_Date"].dt.strftime("%Y-%m")
+    sales["Created_at"] = pd.Timestamp.now()
+
 
     sales = sales[
         [
@@ -94,6 +96,7 @@ def create_sales_transaction_df():
             "Order_Year",
             "Order_Month",
             "YearMonth",
+            "Created_at"
         ]
     ]
 

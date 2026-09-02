@@ -249,6 +249,7 @@ def split_clean_and_rejected(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFra
 
     os.makedirs("Cleaned_Data", exist_ok=True)
     os.makedirs("Rejected_Data", exist_ok=True)
+    cleaned_df["Created_at"] = pd.Timestamp.now()
 
     cleaned_df.to_csv("Cleaned_Data/valid_data/Products.csv", index=False)
     rejected_df.to_csv("Cleaned_Data/Rejected_Data/Rejected_Products.csv", index=False)

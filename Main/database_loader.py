@@ -42,7 +42,8 @@ TABLE_SCHEMAS: dict[str, str] = {
             Gender VARCHAR(20),
             City VARCHAR(50),
             State VARCHAR(50),
-            Registration_Date DATE
+            Registration_Date DATE,
+            Created_at DATETIME
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """,
     "products": """
@@ -52,7 +53,8 @@ TABLE_SCHEMAS: dict[str, str] = {
             Category VARCHAR(50),
             Sub_Category VARCHAR(50),
             Price DECIMAL(10, 2),
-            Supplier VARCHAR(100)
+            Supplier VARCHAR(100),
+            Created_at DATETIME
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """,
     "orders": """
@@ -64,6 +66,7 @@ TABLE_SCHEMAS: dict[str, str] = {
             Quantity INT,
             Payment_Method VARCHAR(50),
             Order_Status VARCHAR(50),
+            Created_at DATETIME,
             FOREIGN KEY (Customer_ID)REFERENCES customers(Customer_ID),
             FOREIGN KEY (Product_ID)REFERENCES products(Product_ID)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -92,7 +95,8 @@ CREATE TABLE IF NOT EXISTS sales_transaction (
 
     Order_Year INT,
     Order_Month VARCHAR(20),
-    YearMonth VARCHAR(20)
+    YearMonth VARCHAR(20),
+    Created_at DATETIME
 ) ENGINE=InnoDB;
 """,
 }
@@ -231,6 +235,7 @@ def load_cleaned_data_to_db(
     
     conn = get_connection(config=config)
     cursor = conn.cursor()
+    cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
 
     try:
         # Load Cleaned Tables
@@ -250,6 +255,7 @@ def load_cleaned_data_to_db(
         logger.error("Database loading failed: %s", e)
         raise
     finally:
+        cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
         cursor.close()
         conn.close()
 

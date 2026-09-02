@@ -85,7 +85,7 @@ def clean_missing_values(df: pd.DataFrame) -> pd.DataFrame:
     """
     logger.info("Cleaning Missing Values...")
     df["Customer_Name"] = df["Customer_Name"].fillna("Unknown")
-    df["Email"] = df["Email"].fillna("missing@email.com")
+    df["Email"] = df["Email"].fillna("missingemail")
     df["Phone"] = df["Phone"].fillna("0000000000")
     df["Gender"] = df["Gender"].fillna("Unknown")
     df["City"] = df["City"].fillna("Unknown")
@@ -295,6 +295,7 @@ def split_clean_and_rejected(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFra
     os.makedirs("Rejected_Data", exist_ok=True)
     cleaned_df = cleaned_df.drop(columns=["Reject_Reason", "Duplicate_Customer_ID"])
     rejected_df = rejected_df.drop(columns=["Duplicate_Customer_ID"])
+    cleaned_df["Created_at"] = pd.Timestamp.now()
 
     cleaned_df.to_csv("Cleaned_Data/valid_data/Customers.csv", index=False)
     rejected_df.to_csv("Cleaned_Data/Rejected_Data/Rejected_Customers.csv", index=False)

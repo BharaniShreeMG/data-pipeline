@@ -150,7 +150,6 @@ def inject_orders(error_count=20):
     log.info(f"Total Modified Rows : {len(used_indexes)}")
     log.info(f"Output File         : {order_file}")
     log.info("=" * 60)
-
     return df
 
 if __name__ == "__main__":
